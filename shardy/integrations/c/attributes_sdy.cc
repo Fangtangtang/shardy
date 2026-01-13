@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include "shardy/integrations/c/attributes.h"
+#include "shardy/integrations/c/attributes_sdy.h"
 
 #include <cstdint>
 #include <optional>
@@ -66,6 +66,10 @@ int64_t sdyMeshAxisAttrGetSize(MlirAttribute attr) {
   return unwrapAttr<sdy::MeshAxisAttr>(attr).getSize();
 }
 
+MlirAttribute sdyMeshAxisAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::MeshAxisAttr>(unwrap(attr)));
+}
+
 //===----------------------------------------------------------------------===//
 // MeshAttr
 //===----------------------------------------------------------------------===//
@@ -98,6 +102,10 @@ MlirAttribute sdyMeshAttrGetAxesElem(MlirAttribute attr, intptr_t pos) {
   return wrap(unwrapAttr<sdy::MeshAttr>(attr).getAxes()[pos]);
 }
 
+MlirAttribute sdyMeshAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::MeshAttr>(unwrap(attr)));
+}
+
 //===----------------------------------------------------------------------===//
 // SubAxisInfoAttr
 //===----------------------------------------------------------------------===//
@@ -117,6 +125,10 @@ int64_t sdySubAxisInfoAttrGetPreSize(MlirAttribute attr) {
 
 int64_t sdySubAxisInfoAttrGetSize(MlirAttribute attr) {
   return unwrapAttr<sdy::SubAxisInfoAttr>(attr).getSize();
+}
+
+MlirAttribute sdySubAxisInfoAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::SubAxisInfoAttr>(unwrap(attr)));
 }
 
 //===----------------------------------------------------------------------===//
@@ -144,6 +156,10 @@ MlirAttribute sdyAxisRefAttrGetSubAxisInfo(MlirAttribute attr) {
   sdy::SubAxisInfoAttr subAsisInfo =
       unwrapAttr<sdy::AxisRefAttr>(attr).getSubAxisInfo();
   return subAsisInfo ? wrap(subAsisInfo) : MlirAttribute();
+}
+
+MlirAttribute sdyAxisRefAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::AxisRefAttr>(unwrap(attr)));
 }
 
 //===----------------------------------------------------------------------===//
@@ -180,6 +196,10 @@ int64_t sdyDimensionShardingAttrGetPriority(MlirAttribute attr) {
   std::optional<int64_t> priority =
       unwrapAttr<sdy::DimensionShardingAttr>(attr).getPriority();
   return priority.has_value() ? *priority : -1;
+}
+
+MlirAttribute sdyDimensionShardingAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::DimensionShardingAttr>(unwrap(attr)));
 }
 
 //===----------------------------------------------------------------------===//
@@ -238,6 +258,10 @@ MlirAttribute sdyTensorShardingAttrGetUnreducedAxesElem(MlirAttribute attr,
       unwrapAttr<sdy::TensorShardingAttr>(attr).getUnreducedAxes()[pos]);
 }
 
+MlirAttribute sdyTensorShardingAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::TensorShardingAttr>(unwrap(attr)));
+}
+
 //===----------------------------------------------------------------------===//
 // TensorShardingPerValueAttr
 //===----------------------------------------------------------------------===//
@@ -266,6 +290,10 @@ MlirAttribute sdyTensorShardingPerValueAttrGetShardingsElem(MlirAttribute attr,
       unwrapAttr<sdy::TensorShardingPerValueAttr>(attr).getShardings()[pos]);
 }
 
+MlirAttribute sdyTensorShardingPerValueAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::TensorShardingPerValueAttr>(unwrap(attr)));
+}
+
 //===----------------------------------------------------------------------===//
 // DimMappingAttr
 //===----------------------------------------------------------------------===//
@@ -287,6 +315,10 @@ intptr_t sdyDimMappingAttrGetFactorIndicesSize(MlirAttribute attr) {
 int64_t sdyDimMappingAttrGetFactorIndicesElem(MlirAttribute attr,
                                               intptr_t pos) {
   return unwrapAttr<sdy::DimMappingAttr>(attr).getFactorIndices()[pos];
+}
+
+MlirAttribute sdyDimMappingAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::DimMappingAttr>(unwrap(attr)));
 }
 
 //===----------------------------------------------------------------------===//
@@ -314,6 +346,10 @@ intptr_t sdyTensorMappingAttrGetDimMappingsSize(MlirAttribute attr) {
 MlirAttribute sdyTensorMappingAttrGetDimMappingsElem(MlirAttribute attr,
                                                      intptr_t pos) {
   return wrap(unwrapAttr<sdy::TensorMappingAttr>(attr).getDimMappings()[pos]);
+}
+
+MlirAttribute sdyTensorMappingAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::TensorMappingAttr>(unwrap(attr)));
 }
 
 //===----------------------------------------------------------------------===//
@@ -423,6 +459,10 @@ int64_t sdyOpShardingRuleAttrGetBlockedPropagationFactorsElem(
       .getBlockedPropagationFactors()[pos];
 }
 
+MlirAttribute sdyOpShardingRuleAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::OpShardingRuleAttr>(unwrap(attr)));
+}
+
 //===----------------------------------------------------------------------===//
 // ManualAxesAttr
 //===----------------------------------------------------------------------===//
@@ -444,6 +484,58 @@ intptr_t sdyManualAxesAttrGetAxesSize(MlirAttribute attr) {
 MlirStringRef sdyManualAxesAttrGetAxesElem(
   MlirAttribute attr, intptr_t pos) {
   return wrap(unwrapAttr<sdy::ManualAxesAttr>(attr)[pos].getValue());
+}
+
+MlirAttribute sdyManualAxesAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::ManualAxesAttr>(unwrap(attr)));
+}
+
+//===----------------------------------------------------------------------===//
+// AxisRefListAttr
+//===----------------------------------------------------------------------===//
+
+bool sdyAttributeIsAAxisRefListAttr(MlirAttribute attr) {
+  return mlir::isa<sdy::AxisRefListAttr>(unwrap(attr));
+}
+
+MlirAttribute sdyAxisRefListAttrGet(MlirContext ctx, intptr_t nAxisRefs, const MlirAttribute* axisRefs) {
+  return wrap(sdy::AxisRefListAttr::get(unwrap(ctx), unwrapAttrs<sdy::AxisRefAttr>(axisRefs, nAxisRefs)));
+}
+
+intptr_t sdyAxisRefListAttrGetAxisRefsSize(MlirAttribute attr) {
+  return unwrapAttr<sdy::AxisRefListAttr>(attr).getValue().size();
+}
+
+MlirAttribute sdyAxisRefListAttrGetAxisRefsElem(MlirAttribute attr, intptr_t pos) {
+  return wrap(unwrapAttr<sdy::AxisRefListAttr>(attr).getValue()[pos]);
+}
+
+MlirAttribute sdyAxisRefListAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::AxisRefListAttr>(unwrap(attr)));
+}
+
+//===----------------------------------------------------------------------===//
+// ListOfAxisRefListsAttr
+//===----------------------------------------------------------------------===//
+
+bool sdyAttributeIsAListOfAxisRefListsAttr(MlirAttribute attr) {
+  return mlir::isa<sdy::ListOfAxisRefListsAttr>(unwrap(attr));
+}
+
+MlirAttribute sdyListOfAxisRefListsAttrGet(MlirContext ctx, intptr_t nAxisRefLists, const MlirAttribute* axisRefLists) {
+  return wrap(sdy::ListOfAxisRefListsAttr::get(unwrap(ctx), unwrapAttrs<sdy::AxisRefListAttr>(axisRefLists, nAxisRefLists)));
+}
+
+intptr_t sdyListOfAxisRefListsAttrGetAxisRefListsSize(MlirAttribute attr) {
+  return unwrapAttr<sdy::ListOfAxisRefListsAttr>(attr).getValue().size();
+}
+
+MlirAttribute sdyListOfAxisRefListsAttrGetAxisRefListsElem(MlirAttribute attr, intptr_t pos) {
+  return wrap(unwrapAttr<sdy::ListOfAxisRefListsAttr>(attr).getValue()[pos]);
+}
+
+MlirAttribute sdyListOfAxisRefListsAttrMaybeDowncast(MlirAttribute attr) {
+  return wrap(mlir::cast<sdy::ListOfAxisRefListsAttr>(unwrap(attr)));
 }
 
 }  // extern "C"

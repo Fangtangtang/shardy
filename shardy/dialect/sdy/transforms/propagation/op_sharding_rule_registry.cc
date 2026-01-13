@@ -303,6 +303,37 @@ OpShardingRuleAttr createOpShardingRule(Operation* op,
         }
         return builder.build();
       })
+      .Case<stablehlo::BatchNormInferenceOp>(
+        [conservativePropagation](stablehlo::BatchNormInferenceOp bn) {
+          auto inTy  = llvm::cast<mlir::RankedTensorType>(bn.getOperand().getType());
+          auto outTy = llvm::cast<mlir::RankedTensorType>(bn.getResult().getType());
+
+          OpShardingRuleBuilder builder(bn);
+
+          const int64_t numOperands = static_cast<int64_t>(bn->getNumOperands());
+          llvm::SmallVector<int64_t> opDims(numOperands, kNullDim);
+
+          for (auto [dU, dimSize] : llvm::enumerate(inTy.getShape())) {
+            const int64_t d = static_cast<int64_t>(dU);
+            std::fill(opDims.begin(), opDims.end(), kNullDim);
+            opDims[0] = d;
+            builder.addFactor(opDims, d, dimSize);
+          }
+
+          const int64_t featAxis = static_cast<int64_t>(bn.getFeatureIndex());
+          const int64_t C = outTy.getDimSize(featAxis);
+
+          for (int64_t paramIdx : {1LL, 2LL, 3LL, 4LL}) {
+            std::fill(opDims.begin(), opDims.end(), kNullDim);
+            opDims[paramIdx] = 0;
+            auto factorType = conservativePropagation ? FactorType::kNeedReplication
+                                                        : FactorType::kPassThrough;
+            builder.addFactor(opDims, kNullDim, C,
+                  factorType, true);
+          }
+
+          return builder.build();
+        })
       .Case<stablehlo::BitcastConvertOp>(
           [](stablehlo::BitcastConvertOp bitcastConvert) {
             ArrayRef<int64_t> inShape =
@@ -685,6 +716,12 @@ OpShardingRuleAttr createOpShardingRule(Operation* op,
                   /*isBlocked=*/usedByRngBitGenerator)
               .build();
         }
+        // Check if the custom call implements the ShardingRuleOpInterface.
+        if (auto shardingRuleOp =
+                  llvm::dyn_cast<ShardingRuleOpInterface>(customCall.getOperation())) {
+          return shardingRuleOp.getShardingRule();
+        }
+
         // TODO(b/327191011): output unregistered op stats instead.
         static llvm::once_flag onceFlag;
         emitOpWarningOnce(
@@ -1093,6 +1130,16 @@ OpShardingRuleAttr createOpShardingRule(Operation* op,
             return builder.build();
           })
       .Case<stablehlo::ScatterOp>([](stablehlo::ScatterOp scatter) {
+        // Check if the scatter op implements the ShardingRuleOpInterface.
+        if (auto shardingRuleOp =
+              llvm::dyn_cast<ShardingRuleOpInterface>(scatter.getOperation())) {
+          // Try to get custom rule - if it returns non-null, use it.
+          if (auto customRule = shardingRuleOp.getShardingRule()) {
+            return customRule;
+          }
+          // If custom rule returns null, fall through to default.
+        }
+
         OpShardingRuleBuilder builder(scatter);
 
         // Since all inputs and results have compatible shapes, we can look at

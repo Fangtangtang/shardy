@@ -71,8 +71,8 @@ void CreateReturnFragmentForMesh(StringRef mesh_name, Operation* return_op,
   }
 
   auto loc = return_op->getLoc();
-  auto fragment_op = FragmentOp::create(
-      builder, loc, fragment_return_types, fragment_operands,
+  auto fragment_op = builder.create<FragmentOp>(
+      loc, fragment_return_types, fragment_operands,
       /*user_origin=*/ArrayAttr::get(builder.getContext(), {}),
       /*mesh_name=*/mesh_name, /*stage_id=*/IntegerAttr());
   Block& fragment_block = fragment_op.getRegion().emplaceBlock();
@@ -98,7 +98,7 @@ void CreateReturnFragmentForMesh(StringRef mesh_name, Operation* return_op,
     }
   }
   auto block_builder = OpBuilder::atBlockEnd(&fragment_block);
-  ReturnOp::create(block_builder, loc, returned_values);
+  block_builder.create<ReturnOp>(loc, returned_values);
 }
 
 // Replaces the return values of the function with transfer ops.

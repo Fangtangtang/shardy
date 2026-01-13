@@ -28,8 +28,8 @@ limitations under the License.
 #include "nanobind/stl/string.h"    // IWYU pragma: keep
 #include "nanobind/stl/variant.h"   // IWYU pragma: keep
 #include "nanobind/stl/vector.h"    // IWYU pragma: keep
-#include "shardy/integrations/c/attributes.h"
-#include "shardy/integrations/c/dialect.h"
+#include "shardy/integrations/c/attributes_sdy.h"
+#include "shardy/integrations/c/dialect_sdy.h"
 
 namespace mlir {
 namespace sdy {
@@ -109,7 +109,15 @@ NB_MODULE(_sdy, m) {
                              })
       .def_property_readonly("size", [](MlirAttribute self) {
         return sdyMeshAxisAttrGetSize(self);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsAMeshAxisAttr(attr)) {
+              return cls(sdyMeshAxisAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "MeshAttr", sdyAttributeIsAMeshAttr)
@@ -133,7 +141,15 @@ NB_MODULE(_sdy, m) {
       .def_property_readonly("axes", [](MlirAttribute self) {
         return propertyVector<MlirAttribute>(self, sdyMeshAttrGetAxesSize,
                                              sdyMeshAttrGetAxesElem);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsAMeshAttr(attr)) {
+              return cls(sdyMeshAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "SubAxisInfoAttr", sdyAttributeIsASubAxisInfoAttr)
@@ -150,7 +166,15 @@ NB_MODULE(_sdy, m) {
           [](MlirAttribute self) { return sdySubAxisInfoAttrGetPreSize(self); })
       .def_property_readonly("size", [](MlirAttribute self) {
         return sdySubAxisInfoAttrGetSize(self);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsASubAxisInfoAttr(attr)) {
+              return cls(sdySubAxisInfoAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "AxisRefAttr", sdyAttributeIsAnAxisRefAttr)
@@ -175,7 +199,15 @@ NB_MODULE(_sdy, m) {
         MlirAttribute subAxisInfo = sdyAxisRefAttrGetSubAxisInfo(self);
         return subAxisInfo.ptr == nullptr ? std::nullopt
                                           : std::optional(subAxisInfo);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsAnAxisRefAttr(attr)) {
+              return cls(sdyAxisRefAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "DimensionShardingAttr", sdyAttributeIsADimensionShardingAttr)
@@ -205,7 +237,15 @@ NB_MODULE(_sdy, m) {
       .def_property_readonly("priority", [](MlirAttribute self) {
         int64_t priority = sdyDimensionShardingAttrGetPriority(self);
         return priority == -1 ? std::nullopt : std::optional(priority);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsADimensionShardingAttr(attr)) {
+              return cls(sdyDimensionShardingAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "TensorShardingAttr", sdyAttributeIsATensorShardingAttr)
@@ -251,7 +291,15 @@ NB_MODULE(_sdy, m) {
         return propertyVector<MlirAttribute>(
             self, sdyTensorShardingAttrGetUnreducedAxesSize,
             sdyTensorShardingAttrGetUnreducedAxesElem);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsATensorShardingAttr(attr)) {
+              return cls(sdyTensorShardingAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "TensorShardingPerValueAttr",
@@ -270,7 +318,15 @@ NB_MODULE(_sdy, m) {
         return propertyVector<MlirAttribute>(
             self, sdyTensorShardingPerValueAttrGetShardingsSize,
             sdyTensorShardingPerValueAttrGetShardingsElem);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsATensorShardingPerValueAttr(attr)) {
+              return cls(sdyTensorShardingPerValueAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "DimMappingAttr", sdyAttributeIsADimMappingAttr)
@@ -288,7 +344,15 @@ NB_MODULE(_sdy, m) {
         return propertyVector<intptr_t>(self,
                                         sdyDimMappingAttrGetFactorIndicesSize,
                                         sdyDimMappingAttrGetFactorIndicesElem);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsADimMappingAttr(attr)) {
+              return cls(sdyDimMappingAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "TensorMappingAttr", sdyAttributeIsATensorMappingAttr)
@@ -310,7 +374,15 @@ NB_MODULE(_sdy, m) {
                              })
       .def_property_readonly("rank", [](MlirAttribute self) {
         return sdyTensorMappingAttrGetRank(self);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsATensorMappingAttr(attr)) {
+              return cls(sdyTensorMappingAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
       m, "OpShardingRuleAttr", sdyAttributeIsAOpShardingRuleAttr)
@@ -394,6 +466,14 @@ NB_MODULE(_sdy, m) {
             return propertyVector<intptr_t>(
                 self, sdyOpShardingRuleAttrGetBlockedPropagationFactorsSize,
                 sdyOpShardingRuleAttrGetBlockedPropagationFactorsElem);
+          })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsAOpShardingRuleAttr(attr)) {
+              return cls(sdyOpShardingRuleAttrMaybeDowncast(attr));
+            }
+            return nb::none();
           });
 
   mlir::python::nanobind_adaptors::mlir_attribute_subclass(
@@ -417,7 +497,67 @@ NB_MODULE(_sdy, m) {
            })
       .def("__len__", [](MlirAttribute& self) {
         return sdyManualAxesAttrGetAxesSize(self);
-      });
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsAManualAxesAttr(attr)) {
+              return cls(sdyManualAxesAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
+
+  mlir::python::nanobind_adaptors::mlir_attribute_subclass(
+      m, "AxisRefListAttr", sdyAttributeIsAAxisRefListAttr)
+      .def_classmethod(
+          "get",
+          [](nb::object cls, const std::vector<MlirAttribute>& axisRefs,
+             MlirContext ctx) {
+            return cls(sdyAxisRefListAttrGet(ctx, axisRefs.size(),
+                                             axisRefs.data()));
+          },
+          nb::arg("cls"), nb::arg("axis_refs"),
+          nb::arg("context").none() = nb::none(),
+          "Creates an AxisRefListAttr with the given axis references.")
+      .def_property_readonly("axis_refs", [](MlirAttribute self) {
+        return propertyVector<MlirAttribute>(
+            self, sdyAxisRefListAttrGetAxisRefsSize,
+            sdyAxisRefListAttrGetAxisRefsElem);
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsAAxisRefListAttr(attr)) {
+              return cls(sdyAxisRefListAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
+
+  mlir::python::nanobind_adaptors::mlir_attribute_subclass(
+      m, "ListOfAxisRefListsAttr", sdyAttributeIsAListOfAxisRefListsAttr)
+      .def_classmethod(
+          "get",
+          [](nb::object cls, const std::vector<MlirAttribute>& axisRefLists,
+             MlirContext ctx) {
+            return cls(sdyListOfAxisRefListsAttrGet(ctx, axisRefLists.size(),
+                                                  axisRefLists.data()));
+          },
+          nb::arg("cls"), nb::arg("axis_ref_lists"),
+          nb::arg("context").none() = nb::none(),
+          "Creates a ListOfAxisRefListsAttr with the given axis reference lists.")
+      .def_property_readonly("axis_ref_lists", [](MlirAttribute self) {
+        return propertyVector<MlirAttribute>(
+            self, sdyListOfAxisRefListsAttrGetAxisRefListsSize,
+            sdyListOfAxisRefListsAttrGetAxisRefListsElem);
+      })
+      .def_classmethod(
+          "maybe_downcast",
+          [](nb::object cls, MlirAttribute attr) -> std::variant<MlirAttribute, nb::object> {
+            if (sdyAttributeIsAListOfAxisRefListsAttr(attr)) {
+              return cls(sdyListOfAxisRefListsAttrMaybeDowncast(attr));
+            }
+            return nb::none();
+          });
 }
 
 }  // namespace

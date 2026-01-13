@@ -346,6 +346,7 @@ void saveShardingOriginsOnModule(
 // the case for the target of the edge, because if the source appears multiple
 // times, then it's because it effects multiple other operands/results in the
 // op.
+[[maybe_unused]]
 bool insertSeenValue(Operation* op, const PropagationEdge& edge,
                      llvm::SmallDenseSet<Value>& seenValues) {
   EdgeNode target = edge.target;

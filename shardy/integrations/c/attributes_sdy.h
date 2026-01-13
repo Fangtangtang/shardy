@@ -13,8 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#ifndef SHARDY_INTEGRATIONS_C_ATTRIBUTES_H_
-#define SHARDY_INTEGRATIONS_C_ATTRIBUTES_H_
+#ifndef SHARDY_INTEGRATIONS_C_ATTRIBUTES_SDY_H_
+#define SHARDY_INTEGRATIONS_C_ATTRIBUTES_SDY_H_
 
 #include <stdint.h>
 #include <sys/types.h>
@@ -40,6 +40,9 @@ MLIR_CAPI_EXPORTED MlirStringRef sdyMeshAxisAttrGetName(MlirAttribute attr);
 
 MLIR_CAPI_EXPORTED int64_t sdyMeshAxisAttrGetSize(MlirAttribute attr);
 
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyMeshAxisAttrMaybeDowncast(MlirAttribute attr);
+
 //===----------------------------------------------------------------------===//
 // MeshAttr
 //===----------------------------------------------------------------------===//
@@ -61,6 +64,9 @@ MLIR_CAPI_EXPORTED intptr_t sdyMeshAttrGetAxesSize(MlirAttribute attr);
 MLIR_CAPI_EXPORTED MlirAttribute sdyMeshAttrGetAxesElem(MlirAttribute attr,
                                                         intptr_t pos);
 
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyMeshAttrMaybeDowncast(MlirAttribute attr);
+
 //===----------------------------------------------------------------------===//
 // SubAxisInfoAttr
 //===----------------------------------------------------------------------===//
@@ -74,6 +80,9 @@ MLIR_CAPI_EXPORTED MlirAttribute sdySubAxisInfoAttrGet(MlirContext ctx,
 MLIR_CAPI_EXPORTED int64_t sdySubAxisInfoAttrGetPreSize(MlirAttribute attr);
 
 MLIR_CAPI_EXPORTED int64_t sdySubAxisInfoAttrGetSize(MlirAttribute attr);
+
+MLIR_CAPI_EXPORTED MlirAttribute
+sdySubAxisInfoAttrMaybeDowncast(MlirAttribute attr);
 
 //===----------------------------------------------------------------------===//
 // AxisRefAttr
@@ -91,6 +100,9 @@ MLIR_CAPI_EXPORTED MlirStringRef sdyAxisRefAttrGetName(MlirAttribute attr);
 // NOTE: Attr is null if there is no sub axis info.
 MLIR_CAPI_EXPORTED MlirAttribute
 sdyAxisRefAttrGetSubAxisInfo(MlirAttribute attr);
+
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyAxisRefAttrMaybeDowncast(MlirAttribute attr);
 
 //===----------------------------------------------------------------------===//
 // DimensionShardingAttr
@@ -115,6 +127,9 @@ MLIR_CAPI_EXPORTED bool sdyDimensionShardingAttrGetIsClosed(MlirAttribute attr);
 // NOTE: returns -1 if the attr has no priority.
 MLIR_CAPI_EXPORTED int64_t
 sdyDimensionShardingAttrGetPriority(MlirAttribute attr);
+
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyDimensionShardingAttrMaybeDowncast(MlirAttribute attr);
 
 //===----------------------------------------------------------------------===//
 // TensorShardingAttr
@@ -149,6 +164,9 @@ sdyTensorShardingAttrGetUnreducedAxesSize(MlirAttribute attr);
 MLIR_CAPI_EXPORTED MlirAttribute
 sdyTensorShardingAttrGetUnreducedAxesElem(MlirAttribute attr, intptr_t pos);
 
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyTensorShardingAttrMaybeDowncast(MlirAttribute attr);
+
 //===----------------------------------------------------------------------===//
 // TensorShardingPerValueAttr
 //===----------------------------------------------------------------------===//
@@ -165,6 +183,9 @@ sdyTensorShardingPerValueAttrGetShardingsSize(MlirAttribute attr);
 MLIR_CAPI_EXPORTED MlirAttribute
 sdyTensorShardingPerValueAttrGetShardingsElem(MlirAttribute attr, intptr_t pos);
 
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyTensorShardingPerValueAttrMaybeDowncast(MlirAttribute attr);
+
 //===----------------------------------------------------------------------===//
 // DimMappingAttr
 //===----------------------------------------------------------------------===//
@@ -179,6 +200,9 @@ sdyDimMappingAttrGetFactorIndicesSize(MlirAttribute attr);
 
 MLIR_CAPI_EXPORTED int64_t
 sdyDimMappingAttrGetFactorIndicesElem(MlirAttribute attr, intptr_t pos);
+
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyDimMappingAttrMaybeDowncast(MlirAttribute attr);
 
 //===----------------------------------------------------------------------===//
 // TensorMappingAttr
@@ -196,6 +220,9 @@ sdyTensorMappingAttrGetDimMappingsSize(MlirAttribute attr);
 
 MLIR_CAPI_EXPORTED MlirAttribute
 sdyTensorMappingAttrGetDimMappingsElem(MlirAttribute attr, intptr_t pos);
+
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyTensorMappingAttrMaybeDowncast(MlirAttribute attr);
 
 //===----------------------------------------------------------------------===//
 // OpShardingRuleAttr
@@ -258,6 +285,9 @@ MLIR_CAPI_EXPORTED int64_t
 sdyOpShardingRuleAttrGetBlockedPropagationFactorsElem(MlirAttribute attr,
                                                       intptr_t pos);
 
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyOpShardingRuleAttrMaybeDowncast(MlirAttribute attr);
+
 //===----------------------------------------------------------------------===//
 // ManualAxesAttr
 //===----------------------------------------------------------------------===//
@@ -272,8 +302,39 @@ MLIR_CAPI_EXPORTED intptr_t sdyManualAxesAttrGetAxesSize(MlirAttribute attr);
 MLIR_CAPI_EXPORTED MlirStringRef sdyManualAxesAttrGetAxesElem(
   MlirAttribute attr, intptr_t pos);
 
+MLIR_CAPI_EXPORTED MlirAttribute
+sdyManualAxesAttrMaybeDowncast(MlirAttribute attr);
+
+//===----------------------------------------------------------------------===//
+// AxisRefListAttr
+//===----------------------------------------------------------------------===//
+
+MLIR_CAPI_EXPORTED bool sdyAttributeIsAAxisRefListAttr(MlirAttribute attr);
+
+MLIR_CAPI_EXPORTED MlirAttribute sdyAxisRefListAttrGet(MlirContext ctx, intptr_t nAxisRefs, const MlirAttribute* axisRefs);
+
+MLIR_CAPI_EXPORTED intptr_t sdyAxisRefListAttrGetAxisRefsSize(MlirAttribute attr);
+
+MLIR_CAPI_EXPORTED MlirAttribute sdyAxisRefListAttrGetAxisRefsElem(MlirAttribute attr, intptr_t pos);
+
+MLIR_CAPI_EXPORTED MlirAttribute sdyAxisRefListAttrMaybeDowncast(MlirAttribute attr);
+
+//===----------------------------------------------------------------------===//
+// ListOfAxisRefListsAttr
+//===----------------------------------------------------------------------===//
+
+MLIR_CAPI_EXPORTED bool sdyAttributeIsAListOfAxisRefListsAttr(MlirAttribute attr);
+
+MLIR_CAPI_EXPORTED MlirAttribute sdyListOfAxisRefListsAttrGet(MlirContext ctx, intptr_t nAxisRefLists, const MlirAttribute* axisRefLists);
+
+MLIR_CAPI_EXPORTED intptr_t sdyListOfAxisRefListsAttrGetAxisRefListsSize(MlirAttribute attr);
+
+MLIR_CAPI_EXPORTED MlirAttribute sdyListOfAxisRefListsAttrGetAxisRefListsElem(MlirAttribute attr, intptr_t pos);
+
+MLIR_CAPI_EXPORTED MlirAttribute sdyListOfAxisRefListsAttrMaybeDowncast(MlirAttribute attr);
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // SHARDY_INTEGRATIONS_C_ATTRIBUTES_H_
+#endif  // SHARDY_INTEGRATIONS_C_ATTRIBUTES_SDY_H_

@@ -1,4 +1,4 @@
-/* Copyright 2024 The Shardy Authors.
+/* Copyright 2025 The Shardy Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#ifndef SHARDY_INTEGRATIONS_C_PASSES_H_
-#define SHARDY_INTEGRATIONS_C_PASSES_H_
+#ifndef SHARDY_INTEGRATIONS_C_PASSES_MPMD_H_
+#define SHARDY_INTEGRATIONS_C_PASSES_MPMD_H_
 
 #include "mlir-c/Support.h"
 
@@ -23,11 +23,11 @@ extern "C" {
 #endif
 
 /// Register all compiler passes and pipelines of Shardy.
-MLIR_CAPI_EXPORTED void mlirRegisterAllSdyPassesAndPipelines();
+MLIR_CAPI_EXPORTED void mlirRegisterAllMpmdPassesAndPipelines();
 
 #ifdef __cplusplus
 }
 #endif
 
 
-#endif  // SHARDY_INTEGRATIONS_C_PASSES_H_
+#endif  // SHARDY_INTEGRATIONS_C_PASSES_MPMD_H_

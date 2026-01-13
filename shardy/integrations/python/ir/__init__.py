@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Python bindings for the SDY dialect."""
+"""Python bindings for the SDY and MPMD dialect."""
 
 # pylint: disable=g-multiple-import,g-importing-member,unused-import,useless-import-alias
 from ._sdy import (
@@ -35,4 +35,28 @@ from ._sdy_ops_gen import (
     ReshardOp as ReshardOp,
     ReturnOp as ReturnOp,
     ShardingConstraintOp as ShardingConstraintOp,
+)
+
+# pylint: disable=g-multiple-import,g-importing-member,unused-import,useless-import-alias
+from ._mpmd import (
+    register_dialect as register_dialect,
+    NamedMeshAttr as NamedMeshAttr,
+    TopologyAttr as TopologyAttr,
+)
+
+from ._mpmd_enums_gen import ReductionType as ReductionType
+
+from ._mpmd_ops_gen import (
+    ReturnOp as ReturnOp,
+    NamedComputationOp as NamedComputationOp,
+    NamedTensorOp as NamedTensorOp,
+    FragmentOp as FragmentOp,
+    FragmentCallOp as FragmentCallOp,
+    TransferOp as TransferOp,
+    AssignOp as AssignOp,
+    UnassignOp as UnassignOp,
+    CallOp as CallOp,
+    ForOp as ForOp,
+    BroadcastOp as BroadcastOp,
+    ReduceOp as ReduceOp,
 )

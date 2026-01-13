@@ -58,6 +58,10 @@ limitations under the License.
 #include "shardy/dialect/sdy/ir/utils.h"
 #include "stablehlo/dialect/StablehloOps.h"
 
+using llvm::isa;
+using llvm::cast;
+using llvm::dyn_cast;
+
 namespace mlir {
 namespace sdy {
 

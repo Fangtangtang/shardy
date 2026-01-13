@@ -89,7 +89,7 @@ bool TypeHasOneElement(Type type) {
 
 // Returns true if `op` is an inter-mesh TransferOp whose global type has only
 // one element.
-bool IsNonScalarInterMeshTransfer(Operation* op) {
+[[ maybe_unused ]] bool IsNonScalarInterMeshTransfer(Operation* op) {
   TransferOp transfer_op = DynCastInterMeshTransfer(op);
   return transfer_op &&
          !TypeHasOneElement(transfer_op.getType().getGlobalTensorType());
@@ -336,7 +336,7 @@ FailureOr<FragmentOp> MergeFragmentBasePass::MergeFragmentsRewrite(
       producer_op.getMeshNameAttr(),
       /*stage_id=*/GetMergedStageIdAttribute(producer_op, mergeable_user));
 
-  for (const auto [attr_name, attr] : merged_attributes) {
+  for (const auto &[attr_name, attr] : merged_attributes) {
     merged_fragment->setAttr(attr_name, attr);
   }
 
